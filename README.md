@@ -24,9 +24,7 @@
 然后我们可以在配置文件中做这么一个配置:
 
 ```json
-# .vscode/setting.json
 {
-  ...
   "mihome.projectAliasMap": {
     "com.xiaomi.demo": "模板项目"
   }
@@ -34,6 +32,6 @@
 
 ```
 
-就会刚刚配置对应的名称也加上，方便辨识
+就会把刚刚配置对应的名称也加上，方便辨识
 
 ![](/2.png)
