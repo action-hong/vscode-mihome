@@ -27,13 +27,13 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(vscode.commands.registerCommand(
     'vscode-mihome.publish',
     (project) => {
-      vscode.window.showInformationMessage('发布: ' + project.label);
-      const cmd = `npm run publish ${project.label}`;
+      const cmd = `npm run publish ${project.id}`;
       if (vscode.window.activeTerminal) {
         vscode.window.activeTerminal.sendText(cmd);
       } else {
         vscode.window.createTerminal().sendText(cmd);
       }
+      vscode.window.showInformationMessage('发布: ' + project.label);
     }
   ));
 
@@ -43,9 +43,16 @@ export function activate(context: vscode.ExtensionContext) {
       ? vscode.workspace.workspaceFolders[0].uri.fsPath
       : undefined;
   if (rootPath) {
+    const provider = new NodeDependenciesProvider(rootPath);
+
+    context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(event => {
+      if (event.affectsConfiguration('mihome.projectAliasMap')) {
+        provider.refresh();
+      }
+    }));
     vscode.window.registerTreeDataProvider(
       'mihomeProject',
-      new NodeDependenciesProvider(rootPath)
+      provider
     );
   } else {
     vscode.window.showErrorMessage('No workspace opened');

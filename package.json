@@ -23,11 +23,17 @@
         }
       ]
     },
+    "configuration": {
+      "title": "米家插件配置",
+      "properties": {
+        "mihome.projectAliasMap": {
+          "type": "object",
+          "default": {},
+          "description": "项目别名映射"
+        }
+      }
+    },
 		"commands": [
-			{
-				"command": "vscode-mihome.helloWorld",
-				"title": "Hello World"
-			},
       {
         "command": "vscode-mihome.publish",
         "title": "发布插件",

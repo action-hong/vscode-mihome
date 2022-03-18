@@ -7,6 +7,13 @@ export class NodeDependenciesProvider
 {
   constructor(private workspaceRoot: string) {}
 
+  private _onDidChangeTreeData: vscode.EventEmitter<Dependency | undefined | null | void> = new vscode.EventEmitter<Dependency | undefined | null | void>();
+  readonly onDidChangeTreeData: vscode.Event<Dependency | undefined | null | void> = this._onDidChangeTreeData.event;
+
+  refresh(): void {
+    this._onDidChangeTreeData.fire();
+  }
+
   getTreeItem(element: Dependency): vscode.TreeItem {
     return element;
   }
@@ -17,13 +24,13 @@ export class NodeDependenciesProvider
       return Promise.resolve([]);
     }
 
-      const projectsPath = path.join(this.workspaceRoot, 'projects');
-      if (this.pathExists(projectsPath)) {
-        return Promise.resolve(this.getProjects(projectsPath));
-      } else {
-        vscode.window.showInformationMessage('Workspace has projects');
-        return Promise.resolve([]);
-      }
+    const projectsPath = path.join(this.workspaceRoot, 'projects');
+    if (this.pathExists(projectsPath)) {
+      return Promise.resolve(this.getProjects(projectsPath));
+    } else {
+      vscode.window.showInformationMessage('Workspace has projects');
+      return Promise.resolve([]);
+    }
   }
 
   /**
@@ -31,12 +38,17 @@ export class NodeDependenciesProvider
    */
   private getProjects(projectsPath: string): Dependency[] {
     if (this.pathExists(projectsPath)) {
+      const map = vscode.workspace.getConfiguration().get("mihome.projectAliasMap") as Record<string, string> || {};
       return fs.readdirSync(projectsPath)
         .filter(file => fs.statSync(path.join(projectsPath, file)).isDirectory())
-        .map(project => {
-          return new Dependency(
-            project
-          );
+        .map(id => {
+          let project = id;
+          if (map[project]) {
+            project = `${project}(${map[project]})`;
+          }
+          const dependency = new Dependency(project);
+          dependency.id = id;
+          return dependency;
         });
     } else {
       return [];
