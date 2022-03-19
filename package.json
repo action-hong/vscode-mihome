@@ -2,6 +2,13 @@
   "name": "vscode-mihome",
 	"displayName": "vscode-mihome",
 	"description": "米家拓展程序开发辅助插件",
+  "author": "kkopite",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/action-hong/vscode-mihome"
+  },
+  "license": "MIT",
+  "publisher": "kkopite",
 	"version": "0.0.1",
 	"engines": {
 		"vscode": "^1.65.0"
